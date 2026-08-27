@@ -1,0 +1,60 @@
+<%- include('../partials/head', { title: 'Resumen' }) %>
+<%- include('../partials/nav') %>
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <h1 class="text-xl font-semibold mb-6">Resumen</h1>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="text-2xl font-semibold text-emerald-600"><%= activeCount %></div>
+      <div class="text-sm text-slate-500">Clientes activos</div>
+    </div>
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="text-2xl font-semibold text-amber-600"><%= expiringCount %></div>
+      <div class="text-sm text-slate-500">Proximos a vencer</div>
+    </div>
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="text-2xl font-semibold text-red-600"><%= expiredCount %></div>
+      <div class="text-sm text-slate-500">Vencidos</div>
+    </div>
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="text-2xl font-semibold text-indigo-600"><%= paymentsThisMonthCount %></div>
+      <div class="text-sm text-slate-500">Pagos del periodo</div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg border border-slate-200 p-4 mb-8">
+    <div class="text-sm text-slate-500">Ingresos del periodo</div>
+    <div class="text-2xl font-semibold">
+      <%= (revenueThisMonthCents / 100).toLocaleString('es-CO', { style: 'currency', currency: business.currency }) %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="text-sm font-medium mb-1">Estado Wompi</div>
+      <div class="text-sm <%= wompiConfigured ? 'text-emerald-600' : 'text-red-600' %>">
+        <%= wompiConfigured ? 'Configurado' : 'Faltan credenciales' %>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="text-sm font-medium mb-1">Estado WhatsApp (<%= whatsappProviderName === 'meta' ? 'Meta Cloud API' : 'Twilio' %>)</div>
+      <div class="text-sm <%= twilioConfigured ? 'text-emerald-600' : 'text-red-600' %>">
+        <%= twilioConfigured ? 'Configurado' : 'Faltan credenciales' %>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="text-sm font-medium mb-1">Ultima ejecucion del scheduler</div>
+      <% if (lastSchedulerRun) { %>
+        <div class="text-sm text-slate-600"><%= lastSchedulerRun.ranAt.toISOString() %></div>
+        <div class="text-xs text-slate-400">
+          evaluados: <%= lastSchedulerRun.candidatesEvaluated %> ·
+          enviados: <%= lastSchedulerRun.remindersSent %> ·
+          fallidos: <%= lastSchedulerRun.remindersFailed %>
+        </div>
+      <% } else { %>
+        <div class="text-sm text-slate-400">Aun no se ha ejecutado</div>
+      <% } %>
+    </div>
+  </div>
+</div>
+<%- include('../partials/foot') %>

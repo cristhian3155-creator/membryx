@@ -1,0 +1,49 @@
+<%- include('../partials/head', { title: 'Importar clientes' }) %>
+<%- include('../partials/nav') %>
+<div class="max-w-3xl mx-auto px-4 py-8">
+  <h1 class="text-xl font-semibold mb-4">Importar clientes</h1>
+
+  <div class="bg-white rounded-lg border border-slate-200 p-4 mb-6">
+    <p class="text-sm text-slate-600 mb-3">
+      Descarga la plantilla oficial, complétala y súbela. Columnas requeridas:
+      <code class="text-xs bg-slate-100 px-1 rounded">full_name, phone, email, plan_code, start_date, expiration_date, status, external_id</code>.
+    </p>
+    <a href="/dashboard/import/template" class="text-indigo-600 text-sm underline">Descargar plantilla (.csv)</a>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="bg-white rounded-lg border border-slate-200 p-4 mb-6">
+    <input type="file" name="file" accept=".csv,.xlsx" required class="text-sm mb-3" />
+    <label class="flex items-center gap-2 text-sm mb-3">
+      <input type="checkbox" name="confirm" value="true" />
+      Confirmar importación (si no se marca, solo se valida sin escribir en la base de datos)
+    </label>
+    <button class="bg-indigo-600 text-white rounded px-4 py-2 text-sm">Subir y procesar</button>
+  </form>
+
+  <% if (importSummary) { %>
+    <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm rounded p-4 mb-6">
+      Importación aplicada: <%= importSummary.created %> clientes creados, <%= importSummary.updated %> actualizados
+      (<%= importSummary.total %> filas).
+    </div>
+  <% } %>
+
+  <% if (report) { %>
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <p class="text-sm mb-2"><%= report.validRows.length %> filas válidas, <%= report.errors.length %> con errores.</p>
+      <% if (report.errors.length > 0) { %>
+        <table class="w-full text-sm">
+          <thead class="text-left text-slate-500"><tr><th class="py-1">Fila</th><th class="py-1">Error</th></tr></thead>
+          <tbody>
+            <% report.errors.forEach(function(e) { %>
+              <tr class="border-t border-slate-100"><td class="py-1 pr-4"><%= e.row %></td><td class="py-1 text-red-600"><%= e.message %></td></tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <p class="text-xs text-slate-400 mt-2">Corrige los errores y vuelve a subir el archivo. No se escribió nada en la base de datos.</p>
+      <% } else if (!importSummary) { %>
+        <p class="text-xs text-slate-400">Archivo válido. Marca "Confirmar importación" y vuelve a subirlo para aplicarlo.</p>
+      <% } %>
+    </div>
+  <% } %>
+</div>
+<%- include('../partials/foot') %>

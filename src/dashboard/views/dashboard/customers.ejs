@@ -1,0 +1,45 @@
+<%- include('../partials/head', { title: 'Clientes' }) %>
+<%- include('../partials/nav') %>
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-xl font-semibold">Clientes</h1>
+    <form method="get" class="flex gap-2">
+      <input name="q" value="<%= search %>" placeholder="Buscar por nombre o telefono" class="border border-slate-300 rounded px-3 py-1.5 text-sm" />
+      <button class="bg-indigo-600 text-white rounded px-3 py-1.5 text-sm">Buscar</button>
+    </form>
+  </div>
+
+  <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-100 text-left text-slate-500">
+        <tr>
+          <th class="px-4 py-2">Nombre</th>
+          <th class="px-4 py-2">Telefono</th>
+          <th class="px-4 py-2">Plan</th>
+          <th class="px-4 py-2">Inicio</th>
+          <th class="px-4 py-2">Vencimiento</th>
+          <th class="px-4 py-2">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% customers.forEach(function(c) { const m = c.memberships[0]; %>
+        <tr class="border-t border-slate-100 hover:bg-slate-50">
+          <td class="px-4 py-2"><a class="text-indigo-600" href="/dashboard/customers/<%= c.id %>"><%= c.fullName %></a></td>
+          <td class="px-4 py-2"><%= c.phone %></td>
+          <td class="px-4 py-2"><%= m ? m.plan.name : '-' %></td>
+          <td class="px-4 py-2"><%= m ? m.startDate.toISOString().slice(0,10) : '-' %></td>
+          <td class="px-4 py-2"><%= m ? m.expirationDate.toISOString().slice(0,10) : '-' %></td>
+          <td class="px-4 py-2"><%= m ? m.status : 'SIN MEMBRESIA' %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex gap-2 mt-4 text-sm">
+    <% for (let p = 1; p <= totalPages; p++) { %>
+      <a href="?page=<%= p %>&q=<%= search %>" class="px-2 py-1 rounded border <%= p === page ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-300' %>"><%= p %></a>
+    <% } %>
+  </div>
+</div>
+<%- include('../partials/foot') %>

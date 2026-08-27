@@ -1,0 +1,16 @@
+<%- include('partials/head', { title: 'Iniciar sesion' }) %>
+<div class="min-h-screen flex items-center justify-center">
+  <form method="post" action="/login" class="bg-white p-8 rounded-lg shadow-sm border border-slate-200 w-80">
+    <h1 class="text-lg font-semibold mb-1"><%= business.name %></h1>
+    <p class="text-sm text-slate-500 mb-4">Panel administrativo</p>
+    <% if (error) { %>
+      <p class="text-sm text-red-600 mb-3"><%= error %></p>
+    <% } %>
+    <label class="block text-sm mb-1">Email</label>
+    <input name="email" type="email" required class="w-full border border-slate-300 rounded px-3 py-2 mb-3 text-sm" />
+    <label class="block text-sm mb-1">Contrasena</label>
+    <input name="password" type="password" required class="w-full border border-slate-300 rounded px-3 py-2 mb-4 text-sm" />
+    <button class="w-full bg-indigo-600 text-white rounded py-2 text-sm font-medium hover:bg-indigo-700">Entrar</button>
+  </form>
+</div>
+<%- include('partials/foot') %>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<script>document.documentElement.className = "js";</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Membryx — Cobro y renovación automática de membresías</title>
+<meta name="description" content="Membryx cobra, renueva y le recuerda a cada cliente por WhatsApp cuándo debe pagar su membresía. Un sistema real, ya piloteado con un gimnasio, implementado por Membrix.">
+<meta name="theme-color" content="#0A0C10">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="progress"><div class="progress__bar" id="progressBar"></div></div>
+
+<header class="topbar">
+  <a class="topbar__logo" href="#top">
+    <svg class="brandmark" viewBox="0 0 40 40" width="30" height="30" aria-hidden="true">
+      <rect x="2" y="2" width="36" height="36" rx="11" fill="#12151C" stroke="#232833"/>
+      <rect x="6" y="11" width="16" height="16" rx="6" fill="#4C82F7"/>
+      <circle cx="11" cy="18" r="1.3" fill="#0B1220"/>
+      <circle cx="17" cy="18" r="1.3" fill="#0B1220"/>
+      <path d="M16 15a6.5 6.5 0 0 1 6.5-6.5H28A6.5 6.5 0 0 1 34.5 15v5A6.5 6.5 0 0 1 28 26.5h-3l-4.2 3.6.7-4C18.3 24.6 16 22 16 19z" fill="#22C55E"/>
+      <circle cx="23.5" cy="17.5" r="1.2" fill="#062712"/>
+      <circle cx="28.5" cy="17.5" r="1.2" fill="#062712"/>
+    </svg>
+    <span>Membry<b>x</b></span>
+  </a>
+  <div class="topbar__clash" aria-hidden="true">
+    <svg class="clash__mascot clash__mascot--mem" viewBox="0 0 88 100">
+      <rect x="20" y="76" width="13" height="15" rx="6.5" fill="#3A6BD8"/>
+      <rect x="55" y="76" width="13" height="15" rx="6.5" fill="#3A6BD8"/>
+      <rect x="10" y="18" width="68" height="62" rx="20" fill="#4C82F7"/>
+      <rect x="32" y="9" width="24" height="8" rx="4" fill="#3A6BD8"/>
+      <circle cx="32" cy="46" r="4.2" fill="#0B1220"/>
+      <circle cx="56" cy="46" r="4.2" fill="#0B1220"/>
+      <path d="M32 60c4 5 20 5 24 0" stroke="#0B1220" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+    </svg>
+    <svg class="clash__badge" viewBox="0 0 40 40">
+      <rect x="2" y="2" width="36" height="36" rx="11" fill="#12151C" stroke="#232833"/>
+      <rect x="6" y="11" width="16" height="16" rx="6" fill="#4C82F7"/>
+      <circle cx="11" cy="18" r="1.3" fill="#0B1220"/>
+      <circle cx="17" cy="18" r="1.3" fill="#0B1220"/>
+      <path d="M16 15a6.5 6.5 0 0 1 6.5-6.5H28A6.5 6.5 0 0 1 34.5 15v5A6.5 6.5 0 0 1 28 26.5h-3l-4.2 3.6.7-4C18.3 24.6 16 22 16 19z" fill="#22C55E"/>
+      <circle cx="23.5" cy="17.5" r="1.2" fill="#062712"/>
+      <circle cx="28.5" cy="17.5" r="1.2" fill="#062712"/>
+    </svg>
+    <svg class="clash__mascot clash__mascot--ryx" viewBox="0 0 88 100">
+      <rect x="20" y="80" width="13" height="13" rx="6.5" fill="#1AA34E"/>
+      <rect x="55" y="80" width="13" height="13" rx="6.5" fill="#1AA34E"/>
+      <path d="M14 44c0-16 13-29 30-29s30 13 30 29-13 29-30 29c-3.2 0-6.4-.5-9.3-1.4L18 82l2.9-15.4C16.8 60.4 14 52.6 14 44z" fill="#22C55E"/>
+      <circle cx="34" cy="42" r="4.2" fill="#062712"/>
+      <circle cx="58" cy="42" r="4.2" fill="#062712"/>
+      <path d="M34 56c4 5 20 5 24 0" stroke="#062712" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+    </svg>
+  </div>
+  <div class="topbar__actions">
+    <a class="btn btn--primary btn--sm" href="#contacto">Hablemos</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero__grid">
+      <div>
+        <span class="eyebrow" data-reveal="fade">Para gimnasios y negocios con membresías</span>
+        <h1 class="display d0" data-reveal="up" style="margin-top:12px">
+          Deja de perseguir pagos.<br>
+          Que tu sistema <span class="blue">los cobre por ti</span>.
+        </h1>
+        <p class="lead" data-reveal="up" style="margin-top:16px">
+          Membryx renueva membresías automáticamente, valida cada pago y le avisa a cada
+          cliente por WhatsApp cuándo debe pagar — sin que nadie en tu negocio tenga que
+          revisar una planilla ni escribir un solo recordatorio a mano.
+        </p>
+
+        <div class="hero__cta-row" data-reveal="up">
+          <a class="btn btn--primary" href="#contacto">Quiero verlo funcionando</a>
+          <a class="btn btn--ghost" href="#mecanismo">Cómo funciona ↓</a>
+        </div>
+        <p class="hero__note" data-reveal="fade">
+          No es autoservicio. Primero hablamos de tu operación y lo configuramos contigo.
+        </p>
+
+        <div class="hero__stats" data-reveal="up">
+          <div class="stat"><b>D-3 · D-2 · D-1 · D-0</b><span>Ciclo de recordatorios automáticos</span></div>
+          <div class="stat"><b>Tarjeta · Nequi · PSE</b><span>Métodos de pago vía Wompi</span></div>
+          <div class="stat"><b>08:00 a.m.</b><span>El sistema revisa vencimientos cada día</span></div>
+        </div>
+      </div>
+
+      <div>
+        <figure class="mascot-scene" data-reveal="up">
+          <div class="mascot-scene__stage">
+            <span class="floaty floaty--1" aria-hidden="true">♥</span>
+            <span class="floaty floaty--2" aria-hidden="true">✓</span>
+            <span class="floaty floaty--3" aria-hidden="true">♪</span>
+
+            <svg class="mascot mascot--mem" viewBox="0 0 88 100" aria-hidden="true">
+              <ellipse cx="44" cy="93" rx="24" ry="5" fill="#000" opacity=".28"/>
+              <rect x="20" y="76" width="13" height="15" rx="6.5" fill="#3A6BD8"/>
+              <rect x="55" y="76" width="13" height="15" rx="6.5" fill="#3A6BD8"/>
+              <rect x="10" y="18" width="68" height="62" rx="20" fill="#4C82F7"/>
+              <rect x="32" y="9" width="24" height="8" rx="4" fill="#3A6BD8"/>
+              <circle cx="32" cy="46" r="4.2" fill="#0B1220"/>
+              <circle cx="56" cy="46" r="4.2" fill="#0B1220"/>
+              <path d="M32 60c4 5 20 5 24 0" stroke="#0B1220" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+            </svg>
+
+            <svg class="mascot-scene__envelope" viewBox="0 0 40 28" aria-hidden="true">
+              <rect x="1" y="1" width="38" height="26" rx="5" fill="#F3F5F8"/>
+              <path d="M2 3l18 14L38 3" stroke="#4C82F7" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+
+            <svg class="mascot mascot--ryx" viewBox="0 0 88 100" aria-hidden="true">
+              <ellipse cx="44" cy="93" rx="24" ry="5" fill="#000" opacity=".28"/>
+              <rect x="20" y="80" width="13" height="13" rx="6.5" fill="#1AA34E"/>
+              <rect x="55" y="80" width="13" height="13" rx="6.5" fill="#1AA34E"/>
+              <path d="M14 44c0-16 13-29 30-29s30 13 30 29-13 29-30 29c-3.2 0-6.4-.5-9.3-1.4L18 82l2.9-15.4C16.8 60.4 14 52.6 14 44z" fill="#22C55E"/>
+              <circle cx="34" cy="42" r="4.2" fill="#062712"/>
+              <circle cx="58" cy="42" r="4.2" fill="#062712"/>
+              <path d="M34 56c4 5 20 5 24 0" stroke="#062712" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+          <figcaption class="mascot-scene__caption">
+            <b>Mem</b> avisa, <b>Ryx</b> recibe. Cada recordatorio sale solo, todos los días.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROBLEMA ============ -->
+<section class="section on-soft" id="problema">
+  <div class="wrap">
+    <div class="section-head" data-reveal="fade">
+      <span class="eyebrow">El problema</span>
+      <h2 class="display d1" style="margin-top:14px">
+        Administrar membresías a mano cuesta más de lo que parece
+      </h2>
+    </div>
+
+    <div class="chaos-scene" id="problemScene" aria-hidden="true">
+      <div class="chaos-scene__sheet">
+        <div class="chaos-scene__row"></div>
+        <div class="chaos-scene__row"></div>
+        <div class="chaos-scene__row"></div>
+        <div class="chaos-scene__row chaos-scene__row--late">
+          <span class="chaos-scene__tag">vencido</span>
+        </div>
+      </div>
+      <svg class="chaos-scene__glass" viewBox="0 0 24 24">
+        <circle cx="10" cy="10" r="7" fill="none" stroke="#A6ADB8" stroke-width="2.4"/>
+        <line x1="15" y1="15" x2="21" y2="21" stroke="#A6ADB8" stroke-width="2.6" stroke-linecap="round"/>
+      </svg>
+      <span class="chaos-scene__alert">!</span>
+    </div>
+
+    <div class="pain" id="painGrid">
+      <div class="pain__item">
+        <span class="pain__ico pain__ico--mem">1</span>
+        <div>
+          <p class="pain__t">Revisar planillas para saber quién debe pagar</p>
+          <p class="pain__d">Cada vencimiento hay que buscarlo a mano, cliente por cliente, en una hoja de cálculo o un cuaderno.</p>
+        </div>
+      </div>
+      <div class="pain__item">
+        <span class="pain__ico pain__ico--ryx">2</span>
+        <div>
+          <p class="pain__t">Recordatorios que dependen de que alguien se acuerde</p>
+          <p class="pain__d">Si nadie escribe el WhatsApp a tiempo, el cliente simplemente deja de pagar y nadie lo nota.</p>
+        </div>
+      </div>
+      <div class="pain__item">
+        <span class="pain__ico pain__ico--mem">3</span>
+        <div>
+          <p class="pain__t">Pagos sin un registro claro</p>
+          <p class="pain__d">Efectivo, transferencia, distintos medios — y ninguna forma simple de saber qué se pagó y cuándo.</p>
+        </div>
+      </div>
+      <div class="pain__item">
+        <span class="pain__ico pain__ico--ryx">4</span>
+        <div>
+          <p class="pain__t">Clientes que se van sin avisar</p>
+          <p class="pain__d">Sin una alerta automática de vencimiento, te enteras de que perdiste un cliente semanas después.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pivot" data-reveal="fade">
+      <p class="display d2">El problema casi nunca es conseguir clientes.<br>Es <span class="blue">sostener el cobro</span> mes tras mes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MECANISMO ============ -->
+<section class="section" id="mecanismo">
+  <div class="wrap">
+    <div class="section-head" data-reveal="fade">
+      <span class="eyebrow">Cómo funciona</span>
+      <h2 class="display d1" style="margin-top:14px">Un sistema que corre solo, todos los días</h2>
+      <p class="body" style="margin-top:14px">
+        Esto no es una promesa abstracta: es el flujo real, ya implementado y probado.
+        Toca cada paso para ver qué hace.
+      </p>
+    </div>
+
+    <div class="hero__grid" style="align-items:flex-start">
+      <div class="flow" id="flow" data-reveal="up">
+        <div class="fstep is-active" data-step="0">
+          <span class="fstep__n">01</span>
+          <div>
+            <p class="fstep__t">Tu cliente recibe su link de pago</p>
+            <p class="fstep__d">Puede pagar con tarjeta, Nequi o PSE a través de Wompi. Nadie de tu equipo tiene que cobrar en persona.</p>
+          </div>
+        </div>
+        <div class="fstep" data-step="1">
+          <span class="fstep__n">02</span>
+          <div>
+            <p class="fstep__t">El pago se confirma automáticamente</p>
+            <p class="fstep__d">Wompi notifica al sistema, la firma del evento se valida y el pago queda registrado sin que nadie lo escriba a mano.</p>
+            <span class="fstep__tag">Verificación de firma · sin doble cobro</span>
+          </div>
+        </div>
+        <div class="fstep" data-step="2">
+          <span class="fstep__n">03</span>
+          <div>
+            <p class="fstep__t">La membresía se renueva sola</p>
+            <p class="fstep__d">La nueva fecha de vencimiento se calcula según el plan del cliente — mensual, trimestral, semestral o anual.</p>
+          </div>
+        </div>
+        <div class="fstep" data-step="3">
+          <span class="fstep__n">04</span>
+          <div>
+            <p class="fstep__t">Tu cliente recibe confirmación por WhatsApp</p>
+            <p class="fstep__d">Al instante, sin que nadie escriba el mensaje. Tu cliente sabe que su pago quedó registrado.</p>
+          </div>
+        </div>
+        <div class="fstep" data-step="4">
+          <span class="fstep__n">05</span>
+          <div>
+            <p class="fstep__t">Cada mañana, el sistema revisa quién está por vencer</p>
+            <p class="fstep__d">Todos los días a las 8:00 a.m., Membryx revisa qué membresías vencen en 3, 2, 1 o 0 días y envía el recordatorio exacto para cada caso — una sola vez por cliente y por ciclo.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim" data-reveal="up">
+        <span class="eyebrow eyebrow--wa">Simulador · mensajes reales del sistema</span>
+        <p class="body" style="margin:12px 0 16px">Elige el momento del ciclo y mira el mensaje exacto que Membryx envía.</p>
+        <div class="sim__tabs" id="simTabs">
+          <button class="sim__tab is-on" data-day="3">Vence en 3 días</button>
+          <button class="sim__tab" data-day="2">Vence en 2 días</button>
+          <button class="sim__tab" data-day="1">Vence en 1 día</button>
+          <button class="sim__tab" data-day="0">Vence hoy</button>
+        </div>
+        <div class="phone" style="max-width:none">
+          <div class="phone__top">
+            <div class="phone__avatar">JP</div>
+            <div>
+              <p class="phone__name">Juan Pérez</p>
+              <p class="phone__status">● Recordatorio automático</p>
+            </div>
+          </div>
+          <div class="phone__body" id="simBubble" style="min-height:120px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUÉ INCLUYE ============ -->
+<section class="section on-soft" id="incluye">
+  <div class="wrap">
+    <div class="section-head center" data-reveal="fade">
+      <span class="eyebrow" style="justify-content:center">Qué incluye</span>
+      <h2 class="display d1" style="margin-top:14px">Todo lo necesario, nada de más</h2>
+      <p class="body" style="margin:14px auto 0">
+        Membrix analiza primero tu operación y configura solo lo que tu negocio realmente necesita.
+      </p>
+    </div>
+
+    <div class="grid grid-3" data-reveal="up">
+      <div class="feat">
+        <span class="feat__ico">$</span>
+        <p class="feat__t">Cobro con Wompi</p>
+        <p class="feat__d">Tarjeta, Nequi o PSE. El pago ocurre en Wompi Web Checkout: tu negocio nunca almacena datos de tarjeta.</p>
+      </div>
+      <div class="feat">
+        <span class="feat__ico">↻</span>
+        <p class="feat__t">Renovación automática</p>
+        <p class="feat__d">Cada pago aprobado renueva la membresía con la fecha correcta, sin intervención manual.</p>
+      </div>
+      <div class="feat">
+        <span class="feat__ico">◷</span>
+        <p class="feat__t">Recordatorios por WhatsApp</p>
+        <p class="feat__d">Envío automático D-3, D-2, D-1 y el día del vencimiento — el mismo cliente nunca recibe el mismo aviso dos veces.</p>
+      </div>
+      <div class="feat">
+        <span class="feat__ico">▤</span>
+        <p class="feat__t">Panel de control</p>
+        <p class="feat__d">Clientes activos, por vencer, vencidos y estado de tus pagos e integraciones, en una sola vista.</p>
+      </div>
+      <div class="feat">
+        <span class="feat__ico">⇪</span>
+        <p class="feat__t">Importación de clientes</p>
+        <p class="feat__d">Sube tu base actual en CSV o Excel, con un modo de validación antes de aplicar cualquier cambio.</p>
+      </div>
+      <div class="feat">
+        <span class="feat__ico">✓</span>
+        <p class="feat__t">Seguro por diseño</p>
+        <p class="feat__d">Cada evento de pago se valida con firma criptográfica y no se procesa dos veces el mismo cobro.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DASHBOARD PREVIEW ============ -->
+<section class="section">
+  <div class="wrap">
+    <div class="hero__grid">
+      <div>
+        <span class="eyebrow" data-reveal="fade">Vista de control</span>
+        <h2 class="display d1" style="margin-top:14px" data-reveal="up">
+          Todo tu negocio, <span class="blue">en un solo panel</span>
+        </h2>
+        <p class="body" style="margin-top:14px" data-reveal="up">
+          Sin planillas paralelas. El panel muestra el estado real de tus clientes y tus
+          integraciones de pago y mensajería, para que sepas qué está pasando sin tener
+          que preguntarle a nadie.
+        </p>
+      </div>
+      <div class="dash" data-reveal="up">
+        <div class="dash__bar">
+          <span class="dash__dot"></span><span class="dash__dot"></span><span class="dash__dot"></span>
+          <span class="dash__title">membryx · panel de control (vista ilustrativa)</span>
+        </div>
+        <div class="dash__body">
+          <div class="dash__grid">
+            <div class="dcard dcard--brand"><p class="dcard__k">Activos</p><p class="dcard__v">—</p></div>
+            <div class="dcard"><p class="dcard__k">Por vencer</p><p class="dcard__v">—</p></div>
+            <div class="dcard dcard--danger"><p class="dcard__k">Vencidos</p><p class="dcard__v">—</p></div>
+            <div class="dcard dcard--wa"><p class="dcard__k">Recordatorios enviados</p><p class="dcard__v">—</p></div>
+          </div>
+          <p class="dash__note">Representación simplificada de las vistas reales del sistema. Los valores se completan con los datos de tu negocio.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PARA QUIÉN ES ============ -->
+<section class="section on-soft">
+  <div class="wrap">
+    <div class="section-head" data-reveal="fade">
+      <span class="eyebrow">Para quién es</span>
+      <h2 class="display d1" style="margin-top:14px">Cualquier negocio que cobre membresías</h2>
+    </div>
+    <div class="grid grid-3" data-reveal="up">
+      <div class="niche niche--mem">
+        <span class="niche__n">01</span>
+        <p class="niche__t">Gimnasios</p>
+        <p class="niche__d">Cobro de membresía, recordatorio de vencimiento y confirmación de pago — todo por WhatsApp, sin que nadie en recepción tenga que perseguir a nadie.</p>
+      </div>
+      <div class="niche niche--ryx">
+        <span class="niche__n">02</span>
+        <p class="niche__t">Box de crossfit</p>
+        <p class="niche__d">Control de membresías por comunidad, aviso automático antes de que se venza el mes y link de pago directo para renovar sin pasar por caja.</p>
+      </div>
+      <div class="niche niche--mem">
+        <span class="niche__n">03</span>
+        <p class="niche__t">Estudios de yoga y pilates</p>
+        <p class="niche__d">Recordatorio de renovación de paquetes de clases y cobro por Wompi, para que nadie pierda su cupo por olvidarse de pagar a tiempo.</p>
+      </div>
+      <div class="niche niche--ryx">
+        <span class="niche__n">04</span>
+        <p class="niche__t">Academias y escuelas deportivas</p>
+        <p class="niche__d">Cobro mensual o trimestral a los acudientes, con recordatorio automático antes del vencimiento y registro claro de quién ya pagó.</p>
+      </div>
+      <div class="niche niche--mem">
+        <span class="niche__n">05</span>
+        <p class="niche__t">Clubes y espacios con socios</p>
+        <p class="niche__d">Gestión de cuotas de socios con renovación registrada y aviso por WhatsApp antes de que la membresía expire.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CASO PILOTO ============ -->
+<section class="section" id="caso">
+  <div class="wrap">
+    <div class="section-head" data-reveal="fade">
+      <span class="eyebrow eyebrow--wa">Caso piloto</span>
+      <h2 class="display d1" style="margin-top:14px">Lo estamos construyendo con un gimnasio real</h2>
+    </div>
+
+    <div class="case" data-reveal="up">
+      <div>
+        <p class="case__logo">Yeye Trainer <span class="blue">Gimnasio</span></p>
+        <span class="case__badge">Primer socio piloto</span>
+        <p class="body" style="margin-top:16px">
+          Yeye Trainer es el primer negocio con el que estamos implementando Membryx.
+          Es un proceso real y en marcha — no una historia de éxito ya cerrada — y así
+          preferimos contarlo.
+        </p>
+      </div>
+      <div>
+        <ul class="case__list">
+          <li>Migración de su base de clientes actual al sistema.</li>
+          <li>Configuración de sus planes reales (mensual, trimestral, semestral, anual).</li>
+          <li>Puesta en marcha del cobro por Wompi y los recordatorios por WhatsApp.</li>
+          <li>Acompañamiento directo de Membrix durante todo el lanzamiento.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CÓMO TRABAJAMOS ============ -->
+<section class="section on-soft">
+  <div class="wrap">
+    <div class="section-head" data-reveal="fade">
+      <span class="eyebrow">Cómo trabajamos</span>
+      <h2 class="display d1" style="margin-top:14px">Membryx no es autoservicio. Te acompañamos a implementarlo</h2>
+      <p class="body" style="margin-top:14px">
+        Somos Membrix, la consultora detrás de Membryx. Analizamos tu operación antes de
+        configurar nada, para evitar herramientas que tu negocio no necesita.
+      </p>
+    </div>
+
+    <ol class="route" data-reveal="up">
+      <li class="rstep">
+        <span class="rstep__n">01</span>
+        <div><p class="rstep__t">Diagnóstico</p><p class="rstep__d">Entendemos cómo cobras hoy, qué planes manejas y dónde se pierde tiempo o dinero.</p></div>
+      </li>
+      <li class="rstep">
+        <span class="rstep__n">02</span>
+        <div><p class="rstep__t">Configuración a tu medida</p><p class="rstep__d">Ajustamos planes, mensajes y horarios de recordatorio a como realmente opera tu negocio.</p></div>
+      </li>
+      <li class="rstep">
+        <span class="rstep__n">03</span>
+        <div><p class="rstep__t">Migración de tus clientes</p><p class="rstep__d">Importamos tu base actual, con una validación previa antes de aplicar cualquier cambio.</p></div>
+      </li>
+      <li class="rstep">
+        <span class="rstep__n">04</span>
+        <div><p class="rstep__t">Acompañamiento en el lanzamiento</p><p class="rstep__d">Estamos contigo mientras el sistema empieza a cobrar y recordar por ti.</p></div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section" id="preguntas">
+  <div class="wrap wrap--mid" style="max-width:820px">
+    <div class="section-head" data-reveal="fade">
+      <span class="eyebrow">Preguntas frecuentes</span>
+      <h2 class="display d1" style="margin-top:14px">Antes de que preguntes</h2>
+    </div>
+
+    <div class="faq" id="faq" data-reveal="up">
+      <div class="faq__item">
+        <button class="faq__q" aria-expanded="false">¿Reemplaza la pasarela de pagos que ya uso? <span class="faq__ico">+</span></button>
+        <div class="faq__a"><p>Membryx usa Wompi para procesar los pagos (tarjeta, Nequi, PSE). Si hoy cobras distinto, lo revisamos juntos en el diagnóstico antes de decidir cómo migrar.</p></div>
+      </div>
+      <div class="faq__item">
+        <button class="faq__q" aria-expanded="false">¿Qué pasa si un cliente no paga a tiempo? <span class="faq__ico">+</span></button>
+        <div class="faq__a"><p>Recibe recordatorios automáticos antes y el día del vencimiento. Si no paga, su membresía queda marcada como vencida en el panel — no se le cobra automáticamente sin que él vuelva a pagar.</p></div>
+      </div>
+      <div class="faq__item">
+        <button class="faq__q" aria-expanded="false">¿Guardan los datos de la tarjeta de mis clientes? <span class="faq__ico">+</span></button>
+        <div class="faq__a"><p>No. El pago ocurre directamente en Wompi Web Checkout. Membryx solo recibe la confirmación de que el pago fue aprobado.</p></div>
+      </div>
+      <div class="faq__item">
+        <button class="faq__q" aria-expanded="false">¿Cuánto toma implementarlo? <span class="faq__ico">+</span></button>
+        <div class="faq__a"><p>Depende de cuántos clientes y planes tengas hoy. Lo definimos juntos en el diagnóstico inicial, sin plazos genéricos que no correspondan a tu caso.</p></div>
+      </div>
+      <div class="faq__item">
+        <button class="faq__q" aria-expanded="false">¿Es solo para gimnasios? <span class="faq__ico">+</span></button>
+        <div class="faq__a"><p>Está pensado para cualquier negocio que cobre membresías recurrentes: gimnasios, box de entrenamiento, estudios, academias y clubes.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA FINAL ============ -->
+<section class="section final" id="contacto">
+  <div class="wrap">
+    <div class="hero__grid" style="align-items:flex-start">
+      <div>
+        <span class="eyebrow" data-reveal="fade">Empecemos</span>
+        <h2 class="display d1" style="margin-top:14px" data-reveal="up">Cuéntanos de tu negocio</h2>
+        <p class="body" style="margin-top:14px" data-reveal="up">
+          Escríbenos con lo básico de tu operación. Te respondemos directamente para
+          agendar el diagnóstico — no hay formularios automáticos ni respuestas genéricas.
+        </p>
+      </div>
+
+      <form class="form" id="contactForm" data-reveal="up">
+        <div class="form__row">
+          <div class="field">
+            <label for="fName">Tu nombre</label>
+            <input id="fName" name="name" type="text" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="fBiz">Nombre del negocio</label>
+            <input id="fBiz" name="business" type="text" required autocomplete="organization">
+          </div>
+        </div>
+        <div class="form__row">
+          <div class="field">
+            <label for="fType">Tipo de negocio</label>
+            <select id="fType" name="type">
+              <option>Gimnasio</option>
+              <option>Box de crossfit</option>
+              <option>Estudio de yoga / pilates</option>
+              <option>Academia deportiva</option>
+              <option>Otro negocio con membresías</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fContact">Email o WhatsApp</label>
+            <input id="fContact" name="contact" type="text" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fMsg">¿Qué te gustaría resolver?</label>
+          <input id="fMsg" name="message" type="text" placeholder="Ej. hoy cobro por transferencia y pierdo el rastro de quién ya pagó">
+        </div>
+        <button class="btn btn--primary" type="submit">Enviar y agendar diagnóstico</button>
+        <p class="form__foot">Se abrirá tu cliente de correo con los datos listos para enviar a Membrix.</p>
+        <p class="form__ok" id="formOk">Listo. Revisa tu cliente de correo para confirmar el envío — te respondemos directamente.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="fab-wrap" id="fabWrap">
+  <nav class="fab-menu" id="fabMenu" aria-label="Navegación">
+    <a href="#mecanismo">Cómo funciona</a>
+    <a href="#incluye">Qué incluye</a>
+    <a href="#caso">Caso piloto</a>
+    <a href="#preguntas">Preguntas</a>
+  </nav>
+  <button class="fab" id="fabBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="fabMenu" aria-label="Abrir navegación">
+    <span class="fab__ring" aria-hidden="true"></span>
+    <svg class="fab__icon" viewBox="0 0 40 30" aria-hidden="true">
+      <rect x="1" y="4" width="19" height="19" rx="7" fill="#fff" opacity=".94"/>
+      <path d="M15 12a7.5 7.5 0 0 1 7.5-7.5H30A7.5 7.5 0 0 1 37.5 12v2A7.5 7.5 0 0 1 30 21.5h-2l-5 4.5.8-5C19.6 19.7 15 16.4 15 12z" fill="#fff"/>
+    </svg>
+  </button>
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__row">
+      <span class="foot__brand">Membry<span class="blue">x</span></span>
+      <nav class="foot__links">
+        <a href="#mecanismo">Cómo funciona</a>
+        <a href="#incluye">Qué incluye</a>
+        <a href="#caso">Caso piloto</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </div>
+    <p class="foot__legal">Un producto de Membrix, consultora tecnológica. Piloto en implementación con Yeye Trainer Gimnasio.</p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

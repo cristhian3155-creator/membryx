@@ -1,0 +1,27 @@
+<%- include('../partials/head', { title: 'Notificaciones' }) %>
+<%- include('../partials/nav') %>
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <h1 class="text-xl font-semibold mb-4">Notificaciones</h1>
+  <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-100 text-left text-slate-500">
+        <tr><th class="px-4 py-2">Cliente</th><th class="px-4 py-2">Tipo</th><th class="px-4 py-2">Programada</th><th class="px-4 py-2">Enviada</th><th class="px-4 py-2">Estado</th><th class="px-4 py-2">Error</th></tr>
+      </thead>
+      <tbody>
+        <% notifications.forEach(function(n) { %>
+        <tr class="border-t border-slate-100">
+          <td class="px-4 py-2"><a class="text-indigo-600" href="/dashboard/customers/<%= n.customerId %>"><%= n.customer.fullName %></a></td>
+          <td class="px-4 py-2"><%= n.type %><% if (n.offsetDays !== null) { %> (D-<%= n.offsetDays %>)<% } %></td>
+          <td class="px-4 py-2"><%= n.scheduledFor.toISOString().slice(0,10) %></td>
+          <td class="px-4 py-2"><%= n.sentAt ? n.sentAt.toISOString() : '-' %></td>
+          <td class="px-4 py-2">
+            <span class="<%= n.status === 'SENT' ? 'text-emerald-600' : (n.status === 'PENDING' ? 'text-amber-600' : 'text-red-600') %>"><%= n.status %></span>
+          </td>
+          <td class="px-4 py-2 text-red-600 text-xs"><%= n.errorMessage || '' %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('../partials/foot') %>

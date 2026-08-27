@@ -1,0 +1,27 @@
+<%- include('../partials/head', { title: 'Pagos' }) %>
+<%- include('../partials/nav') %>
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <h1 class="text-xl font-semibold mb-4">Pagos</h1>
+  <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-100 text-left text-slate-500">
+        <tr><th class="px-4 py-2">Cliente</th><th class="px-4 py-2">Monto</th><th class="px-4 py-2">Metodo</th><th class="px-4 py-2">Referencia</th><th class="px-4 py-2">Estado</th><th class="px-4 py-2">Fecha</th></tr>
+      </thead>
+      <tbody>
+        <% payments.forEach(function(p) { %>
+        <tr class="border-t border-slate-100">
+          <td class="px-4 py-2"><a class="text-indigo-600" href="/dashboard/customers/<%= p.customerId %>"><%= p.customer.fullName %></a></td>
+          <td class="px-4 py-2"><%= (p.amountCents/100).toLocaleString('es-CO',{style:'currency',currency:p.currency}) %></td>
+          <td class="px-4 py-2"><%= p.paymentMethod || '-' %></td>
+          <td class="px-4 py-2 text-xs text-slate-500"><%= p.reference %></td>
+          <td class="px-4 py-2">
+            <span class="<%= p.status === 'APPROVED' ? 'text-emerald-600' : (p.status === 'PENDING' ? 'text-amber-600' : 'text-red-600') %>"><%= p.status %></span>
+          </td>
+          <td class="px-4 py-2"><%= p.createdAt.toISOString().slice(0,10) %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('../partials/foot') %>

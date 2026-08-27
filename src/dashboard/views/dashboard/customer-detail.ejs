@@ -1,0 +1,102 @@
+<%- include('../partials/head', { title: customer.fullName }) %>
+<%- include('../partials/nav') %>
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <a href="/dashboard/customers" class="text-sm text-indigo-600">&larr; Clientes</a>
+  <h1 class="text-xl font-semibold mt-2 mb-1"><%= customer.fullName %></h1>
+  <p class="text-sm text-slate-500 mb-6"><%= customer.phone %> <% if (customer.email) { %>· <%= customer.email %><% } %></p>
+
+  <% if (paymentNotice) { %>
+    <div class="bg-amber-50 border border-amber-200 text-amber-800 text-sm rounded p-3 mb-6">
+      Redirigido desde Wompi para el pago con referencia <%= paymentNotice %>.
+      El estado real se confirma por webhook, no por esta redireccion.
+    </div>
+  <% } %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <h2 class="text-sm font-medium mb-3">Membresia vigente</h2>
+      <% const m = customer.memberships[0]; %>
+      <% if (m) { %>
+        <div class="text-sm text-slate-700">Plan: <%= m.plan.name %></div>
+        <div class="text-sm text-slate-700">Inicio: <%= m.startDate.toISOString().slice(0,10) %></div>
+        <div class="text-sm text-slate-700">Vencimiento: <%= m.expirationDate.toISOString().slice(0,10) %></div>
+        <div class="text-sm text-slate-700">Estado: <%= m.status %></div>
+      <% } else { %>
+        <div class="text-sm text-slate-400">Sin membresia registrada</div>
+      <% } %>
+    </div>
+
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <h2 class="text-sm font-medium mb-3">Generar cobro (Wompi Sandbox)</h2>
+      <form id="checkout-form" class="flex gap-2">
+        <select id="plan-select" class="border border-slate-300 rounded px-2 py-1.5 text-sm">
+          <% plans.forEach(function(p) { %>
+            <option value="<%= p.code %>"><%= p.name %> - <%= (p.priceCents/100).toLocaleString('es-CO',{style:'currency',currency:business.currency}) %></option>
+          <% }) %>
+        </select>
+        <button type="submit" class="bg-indigo-600 text-white rounded px-3 py-1.5 text-sm">Generar link de pago</button>
+      </form>
+      <div id="checkout-result" class="text-sm mt-2"></div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg border border-slate-200 overflow-hidden mb-8">
+    <h2 class="text-sm font-medium p-4 border-b border-slate-100">Pagos</h2>
+    <table class="w-full text-sm">
+      <thead class="bg-slate-100 text-left text-slate-500">
+        <tr><th class="px-4 py-2">Referencia</th><th class="px-4 py-2">Monto</th><th class="px-4 py-2">Metodo</th><th class="px-4 py-2">Estado</th><th class="px-4 py-2">Fecha</th></tr>
+      </thead>
+      <tbody>
+        <% customer.payments.forEach(function(p) { %>
+        <tr class="border-t border-slate-100">
+          <td class="px-4 py-2"><%= p.reference %></td>
+          <td class="px-4 py-2"><%= (p.amountCents/100).toLocaleString('es-CO',{style:'currency',currency:p.currency}) %></td>
+          <td class="px-4 py-2"><%= p.paymentMethod || '-' %></td>
+          <td class="px-4 py-2"><%= p.status %></td>
+          <td class="px-4 py-2"><%= p.createdAt.toISOString().slice(0,10) %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+    <h2 class="text-sm font-medium p-4 border-b border-slate-100">Notificaciones</h2>
+    <table class="w-full text-sm">
+      <thead class="bg-slate-100 text-left text-slate-500">
+        <tr><th class="px-4 py-2">Tipo</th><th class="px-4 py-2">Programada</th><th class="px-4 py-2">Enviada</th><th class="px-4 py-2">Estado</th><th class="px-4 py-2">Error</th></tr>
+      </thead>
+      <tbody>
+        <% customer.notifications.forEach(function(n) { %>
+        <tr class="border-t border-slate-100">
+          <td class="px-4 py-2"><%= n.type %><% if (n.offsetDays !== null) { %> (D-<%= n.offsetDays %>)<% } %></td>
+          <td class="px-4 py-2"><%= n.scheduledFor.toISOString().slice(0,10) %></td>
+          <td class="px-4 py-2"><%= n.sentAt ? n.sentAt.toISOString() : '-' %></td>
+          <td class="px-4 py-2"><%= n.status %></td>
+          <td class="px-4 py-2 text-red-600"><%= n.errorMessage || '' %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const planCode = document.getElementById('plan-select').value;
+    const res = await fetch('/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customerId: '<%= customer.id %>', planCode }),
+    });
+    const data = await res.json();
+    const el = document.getElementById('checkout-result');
+    if (res.ok) {
+      el.innerHTML = '<a class="text-indigo-600 underline" target="_blank" href="' + data.checkoutUrl + '">Abrir checkout de Wompi (ref: ' + data.reference + ')</a>';
+    } else {
+      el.innerHTML = '<span class="text-red-600">' + (data.error?.toString?.() || 'Error generando el pago') + '</span>';
+    }
+  });
+</script>
+<%- include('../partials/foot') %>

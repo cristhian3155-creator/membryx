@@ -1,0 +1,211 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Environment {
+  demo
+  production
+}
+
+enum PlanCode {
+  monthly
+  quarterly
+  semester
+  annual
+}
+
+enum MembershipStatus {
+  ACTIVE
+  EXPIRING
+  EXPIRED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  DECLINED
+  VOIDED
+  ERROR
+}
+
+enum NotificationType {
+  PAYMENT_CONFIRMATION
+  REMINDER
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  SKIPPED
+}
+
+model Business {
+  id          String      @id @default(uuid())
+  name        String
+  timezone    String
+  currency    String
+  environment Environment
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  plans         Plan[]
+  customers     Customer[]
+  memberships   Membership[]
+  payments      Payment[]
+  notifications Notification[]
+
+  @@map("businesses")
+}
+
+model Plan {
+  id           String   @id @default(uuid())
+  businessId   String   @map("business_id")
+  code         PlanCode
+  name         String
+  durationDays Int      @map("duration_days")
+  priceCents   Int      @map("price_cents")
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  business    Business     @relation(fields: [businessId], references: [id])
+  memberships Membership[]
+  payments    Payment[]
+
+  @@unique([businessId, code])
+  @@map("plans")
+}
+
+model Customer {
+  id         String   @id @default(uuid())
+  businessId String   @map("business_id")
+  externalId String?  @map("external_id")
+  fullName   String   @map("full_name")
+  phone      String
+  email      String?
+  active     Boolean  @default(true)
+  demoRecord Boolean  @default(false) @map("demo_record")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  business      Business       @relation(fields: [businessId], references: [id])
+  memberships   Membership[]
+  payments      Payment[]
+  notifications Notification[]
+
+  @@unique([businessId, externalId])
+  @@index([businessId, phone])
+  @@map("customers")
+}
+
+model Membership {
+  id             String           @id @default(uuid())
+  businessId     String           @map("business_id")
+  customerId     String           @map("customer_id")
+  planId         String           @map("plan_id")
+  startDate      DateTime         @map("start_date") @db.Date
+  expirationDate DateTime         @map("expiration_date") @db.Date
+  status         MembershipStatus @default(ACTIVE)
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  business      Business       @relation(fields: [businessId], references: [id])
+  customer      Customer       @relation(fields: [customerId], references: [id])
+  plan          Plan           @relation(fields: [planId], references: [id])
+  payments      Payment[]
+  notifications Notification[]
+
+  @@index([businessId, expirationDate])
+  @@index([customerId])
+  @@map("memberships")
+}
+
+model Payment {
+  id                    String        @id @default(uuid())
+  businessId            String        @map("business_id")
+  customerId            String        @map("customer_id")
+  membershipId          String?       @map("membership_id")
+  planId                String?       @map("plan_id")
+  provider              String
+  providerTransactionId String?       @map("provider_transaction_id")
+  reference             String
+  amountCents           Int           @map("amount_cents")
+  currency              String
+  paymentMethod         String?       @map("payment_method")
+  status                PaymentStatus @default(PENDING)
+  providerPayload       Json?         @map("provider_payload")
+  approvedAt            DateTime?     @map("approved_at")
+  createdAt             DateTime      @default(now()) @map("created_at")
+  updatedAt             DateTime      @updatedAt @map("updated_at")
+
+  business      Business       @relation(fields: [businessId], references: [id])
+  customer      Customer       @relation(fields: [customerId], references: [id])
+  membership    Membership?    @relation(fields: [membershipId], references: [id])
+  plan          Plan?          @relation(fields: [planId], references: [id])
+  notifications Notification[]
+
+  @@unique([reference])
+  @@unique([provider, providerTransactionId])
+  @@index([businessId, status])
+  @@map("payments")
+}
+
+model Notification {
+  id                String             @id @default(uuid())
+  businessId        String             @map("business_id")
+  customerId        String             @map("customer_id")
+  membershipId      String?            @map("membership_id")
+  paymentId         String?            @map("payment_id")
+  type              NotificationType
+  offsetDays        Int?               @map("offset_days")
+  scheduledFor      DateTime           @map("scheduled_for") @db.Date
+  sentAt            DateTime?          @map("sent_at")
+  status            NotificationStatus @default(PENDING)
+  providerMessageId String?            @map("provider_message_id")
+  errorMessage      String?            @map("error_message")
+  createdAt         DateTime           @default(now()) @map("created_at")
+
+  business   Business    @relation(fields: [businessId], references: [id])
+  customer   Customer    @relation(fields: [customerId], references: [id])
+  membership Membership? @relation(fields: [membershipId], references: [id])
+  payment    Payment?    @relation(fields: [paymentId], references: [id])
+
+  @@unique([membershipId, type, offsetDays, scheduledFor])
+  @@unique([paymentId, type])
+  @@index([businessId, status])
+  @@map("notifications")
+}
+
+/// Traza minima de ejecuciones del scheduler diario, usada para mostrar su estado en el dashboard (spec #12).
+model SchedulerRun {
+  id                  String   @id @default(uuid())
+  ranAt               DateTime @default(now()) @map("ran_at")
+  candidatesEvaluated Int      @map("candidates_evaluated")
+  remindersSent       Int      @map("reminders_sent")
+  remindersFailed     Int      @map("reminders_failed")
+  errorMessage        String?  @map("error_message")
+
+  @@map("scheduler_runs")
+}
+
+model WebhookEvent {
+  id              String    @id @default(uuid())
+  provider        String
+  eventType       String    @map("event_type")
+  providerEventId String    @map("provider_event_id")
+  payload         Json
+  signatureValid  Boolean   @map("signature_valid")
+  processed       Boolean   @default(false)
+  processedAt     DateTime? @map("processed_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  @@unique([provider, providerEventId])
+  @@map("webhook_events")
+}
