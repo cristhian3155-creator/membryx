@@ -95,14 +95,16 @@ export async function sendReminderNotification(
 
   try {
     const provider = getWhatsAppProvider();
-    const send = offsetDays === 0 ? provider.sendExpiryNotice : provider.sendExpiryReminder;
-    const result = await send({
+    const input = {
       toPhone: customer.phone,
       customerName: customer.fullName,
       planName: plan.name,
       expirationDateIso: membership.expirationDate.toISOString().slice(0, 10),
       daysUntilExpiration,
-    });
+    };
+    // Llamadas como metodo (no una referencia suelta) para no perder el `this` del proveedor.
+    const result =
+      offsetDays === 0 ? await provider.sendExpiryNotice(input) : await provider.sendExpiryReminder(input);
 
     const updated = await prisma.notification.update({
       where: { id: notification.id },
