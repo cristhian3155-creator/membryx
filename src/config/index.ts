@@ -64,6 +64,11 @@ const envSchema = z.object({
   META_WHATSAPP_LANGUAGE_CODE: z.string().default("es"),
   META_WHATSAPP_TEMPLATE_PAYMENT_CONFIRMATION: z.string().default("payment_confirmation_v2"),
   META_WHATSAPP_TEMPLATE_EXPIRY_REMINDER: z.string().default("expiry_reminder_v2"),
+  // "template": mensaje de negocio vía plantilla aprobada (requisito real de WhatsApp
+  // Business Platform fuera de la ventana de 24h). "text": texto libre, solo entregable
+  // dentro de la ventana de 24h abierta por un mensaje previo del cliente — util mientras
+  // las plantillas propias siguen en revision de Meta.
+  META_WHATSAPP_MESSAGE_MODE: z.enum(["template", "text"]).default("template"),
 
   ADMIN_EMAIL: z.string().email(),
   ADMIN_PASSWORD_HASH: z.string().min(1),
@@ -147,6 +152,7 @@ export const config = {
       paymentConfirmation: env.META_WHATSAPP_TEMPLATE_PAYMENT_CONFIRMATION,
       expiryReminder: env.META_WHATSAPP_TEMPLATE_EXPIRY_REMINDER,
     },
+    messageMode: env.META_WHATSAPP_MESSAGE_MODE,
   },
   admin: {
     email: env.ADMIN_EMAIL,
