@@ -1,5 +1,6 @@
 import { prisma } from "../db/client";
 import { getWhatsAppProvider } from "../integrations";
+import { createCheckoutIntent } from "./checkout-service";
 import type { Customer, Membership, Payment, Plan } from "@prisma/client";
 
 /**
@@ -95,12 +96,25 @@ export async function sendReminderNotification(
 
   try {
     const provider = getWhatsAppProvider();
+
+    // Se genera un link de pago real para que el cliente pueda renovar directo desde el
+    // mensaje. Si falla (ej. proveedor de pago no configurado), el recordatorio se envia
+    // igual, solo que sin el link -- un fallo aqui no debe bloquear el aviso.
+    let checkoutUrl: string | undefined;
+    try {
+      const intent = await createCheckoutIntent(customer.id, plan.code);
+      checkoutUrl = intent.checkoutUrl;
+    } catch (err) {
+      console.error(`[notification] no se pudo generar link de pago para recordatorio (${customer.id})`, err);
+    }
+
     const input = {
       toPhone: customer.phone,
       customerName: customer.fullName,
       planName: plan.name,
       expirationDateIso: membership.expirationDate.toISOString().slice(0, 10),
       daysUntilExpiration,
+      checkoutUrl,
     };
     // Llamadas como metodo (no una referencia suelta) para no perder el `this` del proveedor.
     const result =

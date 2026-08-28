@@ -17,6 +17,8 @@ export interface ExpiryReminderInput {
   planName: string;
   expirationDateIso: string;
   daysUntilExpiration: number;
+  /** Link de pago para renovar, si se pudo generar (opcional: el proveedor de pago puede fallar). */
+  checkoutUrl?: string;
 }
 
 /**

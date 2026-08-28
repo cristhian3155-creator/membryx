@@ -13,15 +13,16 @@ export const messageTemplates = {
     );
   },
   expiryReminder(input: ExpiryReminderInput): string {
+    const link = input.checkoutUrl ? `\n\nPaga aqui para renovar: ${input.checkoutUrl}` : "";
     if (input.daysUntilExpiration === 0) {
       return (
         `Hola ${input.customerName}, tu membresia (${input.planName}) vence HOY ${input.expirationDateIso}. ` +
-        `Renueva hoy para no perder tu acceso.`
+        `Renueva hoy para no perder tu acceso.${link}`
       );
     }
     return (
       `Hola ${input.customerName}, tu membresia (${input.planName}) vence en ${input.daysUntilExpiration} dia(s), ` +
-      `el ${input.expirationDateIso}. Renueva pronto para no perder tu acceso.`
+      `el ${input.expirationDateIso}. Renueva pronto para no perder tu acceso.${link}`
     );
   },
 };
