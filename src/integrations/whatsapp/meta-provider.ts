@@ -1,4 +1,3 @@
-import { messageTemplates } from "./message-templates";
 import type {
   ExpiryReminderInput,
   PaymentConfirmationInput,
@@ -10,6 +9,11 @@ interface MetaWhatsAppConfig {
   phoneNumberId: string;
   accessToken: string;
   apiVersion: string;
+  languageCode: string;
+  templates: {
+    paymentConfirmation: string;
+    expiryReminder: string;
+  };
 }
 
 /** Deja solo digitos, formato que espera la Cloud API en el campo "to" (sin "+", sin "whatsapp:"). */
@@ -18,11 +22,13 @@ function toE164Digits(phone: string): string {
 }
 
 /**
- * Envia mensajes de texto libre via WhatsApp Cloud API (Meta).
- * Nota operativa: en modo desarrollo, la Cloud API solo entrega mensajes a numeros
- * agregados como "recipient de prueba" en el dashboard de la app (WhatsApp > Configuracion
- * de la API), o dentro de la ventana de 24h de una conversacion ya iniciada por el cliente.
- * Ver DEMO.md para el detalle.
+ * Envia mensajes via WhatsApp Cloud API (Meta) usando plantillas aprobadas.
+ *
+ * Nota importante: los mensajes iniciados por el negocio (confirmacion de pago,
+ * recordatorios) DEBEN usar una plantilla aprobada por Meta — el texto libre
+ * ("type": "text") solo se entrega dentro de una ventana de 24h abierta por un
+ * mensaje previo del cliente. Por eso esta implementacion no manda texto libre.
+ * Ver PRODUCTION_MIGRATION.md / DEMO.md para el estado de aprobacion de las plantillas.
  */
 export class MetaWhatsAppCloudProvider implements WhatsAppProvider {
   constructor(private readonly cfg: MetaWhatsAppConfig) {
@@ -31,7 +37,7 @@ export class MetaWhatsAppCloudProvider implements WhatsAppProvider {
     }
   }
 
-  private async send(toPhone: string, body: string): Promise<SendMessageResult> {
+  private async sendTemplate(toPhone: string, templateName: string, params: string[]): Promise<SendMessageResult> {
     const url = `https://graph.facebook.com/${this.cfg.apiVersion}/${this.cfg.phoneNumberId}/messages`;
     try {
       const res = await fetch(url, {
@@ -44,15 +50,24 @@ export class MetaWhatsAppCloudProvider implements WhatsAppProvider {
           messaging_product: "whatsapp",
           recipient_type: "individual",
           to: toE164Digits(toPhone),
-          type: "text",
-          text: { body, preview_url: false },
+          type: "template",
+          template: {
+            name: templateName,
+            language: { code: this.cfg.languageCode },
+            components: [
+              {
+                type: "body",
+                parameters: params.map((text) => ({ type: "text", text })),
+              },
+            ],
+          },
         }),
       });
 
       const json: any = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        const errorMessage = json?.error?.message ?? `HTTP ${res.status}`;
+        const errorMessage = json?.error?.error_user_msg || json?.error?.message || `HTTP ${res.status}`;
         return { success: false, errorMessage };
       }
 
@@ -64,14 +79,22 @@ export class MetaWhatsAppCloudProvider implements WhatsAppProvider {
   }
 
   sendPaymentConfirmation(input: PaymentConfirmationInput): Promise<SendMessageResult> {
-    return this.send(input.toPhone, messageTemplates.paymentConfirmation(input));
+    return this.sendTemplate(input.toPhone, this.cfg.templates.paymentConfirmation, [
+      input.customerName,
+      input.planName,
+      input.expirationDateIso,
+    ]);
   }
 
   sendExpiryReminder(input: ExpiryReminderInput): Promise<SendMessageResult> {
-    return this.send(input.toPhone, messageTemplates.expiryReminder(input));
+    return this.sendTemplate(input.toPhone, this.cfg.templates.expiryReminder, [
+      input.customerName,
+      input.planName,
+      input.expirationDateIso,
+    ]);
   }
 
   sendExpiryNotice(input: ExpiryReminderInput): Promise<SendMessageResult> {
-    return this.send(input.toPhone, messageTemplates.expiryReminder(input));
+    return this.sendExpiryReminder(input);
   }
 }

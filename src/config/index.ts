@@ -61,6 +61,9 @@ const envSchema = z.object({
   META_WHATSAPP_BUSINESS_ACCOUNT_ID: z.string().default(""),
   META_WHATSAPP_VERIFY_TOKEN: z.string().default(""),
   META_WHATSAPP_API_VERSION: z.string().default("v21.0"),
+  META_WHATSAPP_LANGUAGE_CODE: z.string().default("es"),
+  META_WHATSAPP_TEMPLATE_PAYMENT_CONFIRMATION: z.string().default("payment_confirmation_v2"),
+  META_WHATSAPP_TEMPLATE_EXPIRY_REMINDER: z.string().default("expiry_reminder_v2"),
 
   ADMIN_EMAIL: z.string().email(),
   ADMIN_PASSWORD_HASH: z.string().min(1),
@@ -139,6 +142,11 @@ export const config = {
     businessAccountId: env.META_WHATSAPP_BUSINESS_ACCOUNT_ID,
     verifyToken: env.META_WHATSAPP_VERIFY_TOKEN,
     apiVersion: env.META_WHATSAPP_API_VERSION,
+    languageCode: env.META_WHATSAPP_LANGUAGE_CODE,
+    templates: {
+      paymentConfirmation: env.META_WHATSAPP_TEMPLATE_PAYMENT_CONFIRMATION,
+      expiryReminder: env.META_WHATSAPP_TEMPLATE_EXPIRY_REMINDER,
+    },
   },
   admin: {
     email: env.ADMIN_EMAIL,
