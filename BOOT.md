@@ -1,6 +1,7 @@
 # BOOT — Continuidad del proyecto Membryx
 
-**Última actualización:** 2026-08-28 (sesión de deploy + integración WhatsApp Meta)
+**Última actualización:** 2026-08-29 (sesión "a producción": templates en WABA real, scripts de
+promoción/purga, diagnóstico del bloqueo de verificación del número)
 
 Este archivo es el punto de partida para retomar el proyecto en una conversación nueva.
 Léelo completo antes de tocar código. La documentación general del proyecto (arquitectura,
@@ -74,19 +75,76 @@ texto solo entrega si el cliente escribió primero (ventana de 24h) — por eso 
 - Webhook de Meta ya suscrito automáticamente (vía MCP `devtools_webhook_manage`) apuntando a
   `https://membryx-production.up.railway.app/webhooks/meta`.
 
-### Para pasar a producción real con WhatsApp (siguiente sesión)
+### Avances de la sesión 2026-08-29
 
-1. Reintentar verificación del número real (`1261475567050960`) — probablemente ya pasó el
-   cooldown. Pedir código, confirmarlo, registrar con el PIN `962320`.
-2. Revisar si las plantillas ya se aprobaron (`payment_confirmation_v2` sigue UTILITY;
-   `expiry_reminder_v2` fue reclasificada MARKETING por Meta — puede necesitar reescribirse con
-   tono menos promocional para volver a UTILITY).
-3. Cuando ambas cosas estén listas: cambiar `META_WHATSAPP_PHONE_NUMBER_ID=1261475567050960`,
-   `META_WHATSAPP_BUSINESS_ACCOUNT_ID=1727760148479428`, `META_WHATSAPP_MESSAGE_MODE=template`
-   en Railway Variables.
-4. El link de pago en los recordatorios hoy va como texto plano — en modo plantilla debe migrar
-   a un botón de plantilla (URL dinámica), lo que implica volver a someter las plantillas a
-   revisión con ese componente agregado.
+- **Plantillas en la WABA de PRUEBA `37739441525702105`: las dos APROBADAS.**
+  `payment_confirmation_v2` (UTILITY) y `expiry_reminder_v2` (Meta la reclasificó a MARKETING).
+- **Plantillas recreadas en la WABA de PRODUCCIÓN `1727760148479428`** (no se transfieren entre
+  WABAs). Ambas `PENDING`, ambas sometidas como UTILITY:
+  - `payment_confirmation_v2` (id `929206556901076`) — texto idéntico al aprobado.
+  - `expiry_reminder_v2` (id `1552314305941720`) — **reescrita en tono transaccional** para que
+    entre como UTILITY y no como MARKETING: _"Hola {{1}}, te informamos que tu membresia {{2}}
+    vence el {{3}}. Si ya renovaste tu pago, puedes ignorar este mensaje."_ (3 params posicionales,
+    mismo orden que arma `meta-provider.ts`: nombre, plan, fecha ISO).
+- **App suscrita a la WABA de producción** (`POST /1727760148479428/subscribed_apps` → ok) para
+  que los webhooks lleguen cuando se cambie de WABA.
+- **Verificación del número real `1261475567050960`: BLOQUEO IDENTIFICADO.** `request_code` lleva
+  >24h devolviendo `error_subcode 2388091` con `is_transient:false`. No es cooldown: el número
+  `+57 310 5974565` **tiene una cuenta de WhatsApp activa** (es el teléfono real desde el que se
+  "escribió primero" en la demo). No se puede registrar en la Cloud API mientras esté en uso en
+  la app. **Decisión tomada con el usuario:** va a borrar esa cuenta de WhatsApp (Ajustes →
+  Cuenta → Eliminar mi cuenta), esperar unas horas, y reintentar el registro.
+  PIN de verificación en dos pasos para ese número: `962320`.
+- **Scripts nuevos** (`package.json`): `npm run db:promote:production` (marca el Business como
+  `production` y re-sincroniza los 4 planes desde el env; no toca clientes) y
+  `npm run db:purge:demo -- --confirm` (borra clientes `demo_record=true` + su cascada +
+  `webhook_events` + `scheduler_runs`; guard: exige `ENVIRONMENT=production` y `--confirm`).
+- **Secretos de producción generados** (esta sesión, en el chat — NO commiteados): nuevos
+  `ADMIN_PASSWORD_HASH` y `SESSION_SECRET`. Contraseña admin en claro mostrada una sola vez;
+  guardarla en gestor y rotar.
+
+### Identidad visual del panel por negocio (hecho 2026-08-29)
+
+El dashboard EJS se parametrizó para vestirse con la marca de cada cliente sin tocar código:
+
+- Variables nuevas (todas opcionales, con default = marca Membryx índigo):
+  `BRAND_NAME`, `BRAND_PRIMARY`, `BRAND_PRIMARY_DARK`, `BRAND_ACCENT` (colores hex, validados con
+  zod), `BRAND_LOGO_URL`, `BRAND_FAVICON_URL`. Expuestas en `config.brand`.
+- `src/http/app.ts`: middleware que inyecta `res.locals.business` y `res.locals.brand` en todas
+  las vistas (ya no hace falta pasarlos por cada `res.render`).
+- `partials/head.ejs`: inyecta `tailwind.config` (colores `brand` / `brand-dark` / `brand-accent`)
+  + CSS vars `--brand-*`, `<title>` y favicon desde `brand`.
+- `partials/nav.ejs` + `login.ejs`: logo opcional, nombre desde `brand.name`, el tag
+  `(environment)` solo se muestra fuera de producción.
+- Todas las clases `indigo-600/700` de las vistas pasaron a `brand` / `brand-dark`. Los colores
+  de estado (emerald/amber/red) se dejaron intactos a propósito.
+- Para Yeye: setear en Railway `BRAND_NAME="Yeye Trainer GYM"` y sus colores/logo cuando los dé.
+- Nota: el panel usa Tailwind por CDN (`cdn.tailwindcss.com`); el navegador embebido de esta
+  sesión lo bloquea, así que la verificación visual fue por HTML renderizado, no screenshot.
+  Typecheck + tests (12) en verde.
+
+### Checklist restante para producción
+
+1. **WhatsApp — número:** usuario borra WhatsApp de `+57 310 5974565` → reintentar
+   `POST /1261475567050960/request_code?code_method=SMS&language=es` → `POST .../verify_code`
+   con el código → `POST /1261475567050960/register` con `pin=962320`.
+2. **WhatsApp — plantillas:** confirmar que `payment_confirmation_v2` y `expiry_reminder_v2` en
+   la WABA `1727760148479428` pasaron a `APPROVED`.
+3. **WhatsApp — env (Railway):** `META_WHATSAPP_PHONE_NUMBER_ID=1261475567050960`,
+   `META_WHATSAPP_BUSINESS_ACCOUNT_ID=1727760148479428`, `META_WHATSAPP_MESSAGE_MODE=template`.
+4. **Wompi:** usuario está creando la cuenta de comercio real. Cuando tenga las llaves de
+   producción (`pub_prod_...` / `prod_integrity_...` / `prod_events_...`): cargarlas en Railway y
+   registrar la URL de eventos de **producción** en el dashboard de Wompi apuntando a
+   `https://membryx-production.up.railway.app/webhooks/wompi` (separada de la de Sandbox).
+5. **Base de datos:** `ENVIRONMENT=production` + `APP_BASE_URL` real en Railway →
+   `npm run db:promote:production` → `npm run db:purge:demo -- --confirm` → importar el CSV real
+   de clientes por `/dashboard/import` (el usuario lo tiene).
+6. **Admin/sesión:** cargar en Railway el `ADMIN_PASSWORD_HASH` y `SESSION_SECRET` nuevos.
+7. **(Follow-up, no bloquea):** el link de pago en el recordatorio, en modo plantilla, hoy no se
+   envía (el código solo manda 3 params de body, sin botón). Migrar a un botón URL dinámico
+   implica re-someter la plantilla con ese componente y pasar `checkoutUrl` como 4º param en
+   `meta-provider.ts`. Mientras tanto el recordatorio en modo plantilla llega sin link.
+8. **(Follow-up):** borrar la WABA vacía duplicada `1806224457228690` (manual, no por API).
 
 ## Clientes de prueba creados en esta sesión (no son parte del seed original de 500)
 

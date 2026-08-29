@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Membryx — Bienvenida e implementación · Yeye Trainer GYM</title>
+<style>
+  :root{
+    --indigo:#4F46E5;
+    --indigo-deep:#1E1B4B;
+    --cyan:#06B6D4;
+    --cyan-soft:#ECFEFF;
+    --violet-soft:#F5F3FF;
+    --ink:#1E293B;
+    --muted:#64748B;
+    --line:#E2E8F0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Segoe UI",-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    font-size:10.7pt;
+    line-height:1.5;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+  @page{ size:A4; margin:16mm 16mm 15mm 16mm; }
+
+  .page{ page-break-after:always; position:relative; min-height:262mm; }
+  .page:last-child{ page-break-after:auto; }
+
+  /* ---------- Header ---------- */
+  .masthead{
+    display:flex;align-items:center;justify-content:space-between;
+    border-bottom:3px solid var(--indigo);
+    padding-bottom:12px;margin-bottom:20px;
+  }
+  .brand .wordmark{ font-size:20pt;font-weight:800;letter-spacing:.3px;color:var(--indigo-deep);line-height:1; }
+  .brand .wordmark span{color:var(--indigo);}
+  .brand .tag{
+    font-size:7.4pt;letter-spacing:2.4px;text-transform:uppercase;color:var(--muted);margin-top:5px;
+  }
+  .mascots{display:flex;gap:8px;align-items:center;}
+  .mascots svg{width:48px;height:48px;}
+
+  .docmeta{
+    display:flex;justify-content:space-between;gap:18px;
+    background:var(--violet-soft);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:13px 18px;margin-bottom:22px;font-size:9.3pt;
+  }
+  .docmeta div{flex:1;}
+  .docmeta div span{display:block;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;font-size:7.3pt;margin-bottom:3px;}
+  .docmeta div b{display:block;color:var(--indigo-deep);font-weight:700;line-height:1.35;}
+  .docmeta div em{display:block;font-style:normal;color:var(--ink);line-height:1.35;}
+
+  h1{font-size:15pt;color:var(--indigo-deep);margin:0 0 6px;}
+  h2{
+    font-size:11.5pt;color:var(--indigo-deep);margin:22px 0 8px;
+    padding-left:10px;border-left:4px solid var(--cyan);
+  }
+  p{margin:0 0 9px;}
+  .lead{font-size:10.9pt;color:#334155;}
+  strong{color:var(--indigo-deep);}
+  .muted{color:var(--muted);}
+
+  /* ---------- Flow ---------- */
+  .flow{counter-reset:step;margin:6px 0 4px;padding:0;list-style:none;}
+  .flow li{
+    position:relative;padding:9px 0 9px 42px;border-bottom:1px dashed var(--line);
+    page-break-inside:avoid;
+  }
+  .flow li:last-child{border-bottom:none;}
+  .flow li::before{
+    counter-increment:step;content:counter(step);
+    position:absolute;left:0;top:8px;
+    width:27px;height:27px;border-radius:50%;
+    background:var(--indigo);color:#fff;font-weight:700;font-size:9.5pt;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .flow b{color:var(--indigo-deep);}
+
+  /* ---------- Tables ---------- */
+  table{width:100%;border-collapse:collapse;margin:6px 0 10px;font-size:9.4pt;}
+  th{
+    text-align:left;background:var(--indigo-deep);color:#fff;
+    padding:7px 10px;font-size:8.3pt;letter-spacing:1px;text-transform:uppercase;
+  }
+  td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr{page-break-inside:avoid;}
+  tr:nth-child(even) td{background:#FAFAFF;}
+  .grouprow td{
+    background:var(--cyan-soft)!important;color:var(--indigo-deep);
+    font-weight:700;font-size:8.6pt;letter-spacing:1px;text-transform:uppercase;
+  }
+  td.what{width:44%;font-weight:600;color:var(--ink);}
+
+  .callout{
+    background:var(--cyan-soft);border:1px solid #A5F3FC;border-radius:10px;
+    padding:13px 17px;margin:16px 0;font-size:9.4pt;page-break-inside:avoid;
+  }
+  .callout b{color:var(--indigo-deep);}
+
+  /* ---------- Closing / seal ---------- */
+  .closing{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-top:30px;page-break-inside:avoid;}
+  .sign p{margin:0;}
+  .sign .name{font-weight:800;color:var(--indigo-deep);font-size:11pt;margin-top:30px;}
+  .sign .role{color:var(--muted);font-size:9pt;}
+  .seal{width:158px;height:158px;flex:none;}
+
+  .footer{
+    position:absolute;left:0;right:0;bottom:0;
+    border-top:1px solid var(--line);padding-top:8px;
+    font-size:7.8pt;color:var(--muted);display:flex;justify-content:space-between;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 ================= -->
+<section class="page">
+  <div class="masthead">
+    <div class="brand">
+      <div class="wordmark">Membr<span>yx</span></div>
+      <div class="tag">Membresías · Pagos · Recordatorios</div>
+    </div>
+    <div class="mascots">
+      <!-- Mem -->
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Mem">
+        <rect x="13" y="19" width="74" height="69" rx="26" fill="#4F46E5"/>
+        <circle cx="30" cy="18" r="3.6" fill="#4F46E5"/><circle cx="50" cy="14" r="3.6" fill="#4F46E5"/><circle cx="70" cy="18" r="3.6" fill="#4F46E5"/>
+        <circle cx="40" cy="50" r="7.4" fill="#fff"/><circle cx="64" cy="50" r="7.4" fill="#fff"/>
+        <circle cx="41.4" cy="51" r="3.3" fill="#1E1B4B"/><circle cx="65.4" cy="51" r="3.3" fill="#1E1B4B"/>
+        <path d="M39 67 Q52 78 66 67" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <circle cx="29" cy="63" r="3.2" fill="#22D3EE" opacity=".5"/><circle cx="75" cy="63" r="3.2" fill="#22D3EE" opacity=".5"/>
+      </svg>
+      <!-- Ryx -->
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Ryx">
+        <path d="M53 4 L44 22 L56 22 L46 41" stroke="#06B6D4" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="50" cy="56" r="35" fill="#06B6D4"/>
+        <circle cx="40" cy="51" r="7.4" fill="#fff"/><circle cx="62" cy="51" r="7.4" fill="#fff"/>
+        <circle cx="41.4" cy="52" r="3.3" fill="#083344"/><circle cx="63.4" cy="52" r="3.3" fill="#083344"/>
+        <path d="M39 67 Q51 77 63 67" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="docmeta">
+    <div><span>Para</span><b>Jefferson Ramírez</b><em>Propietario · Yeye Trainer GYM</em></div>
+    <div><span>De</span><b>Equipo Membryx</b><em>Implementación y soporte</em></div>
+    <div><span>Asunto</span><b>Bienvenida e inicio de implementación</b><em>Documentación requerida</em></div>
+  </div>
+
+  <h1>Bienvenido a Membryx, Jefferson</h1>
+  <p class="lead">
+    Gracias por confiar en Membryx para ordenar los cobros y las renovaciones de
+    <strong>Yeye Trainer GYM</strong>. Con este documento arrancamos formalmente la implementación:
+    aquí encontrarás cómo va a funcionar el sistema en tu gimnasio y qué información necesitamos
+    de tu parte para dejarlo operando.
+  </p>
+  <p>
+    Membryx es una plataforma que centraliza tus membresías: cobra en línea a través de una
+    pasarela de pagos regulada, confirma cada pago al socio por WhatsApp y le recuerda
+    automáticamente cuando su plan está por vencer. Tú y tu equipo ven todo desde un panel
+    web, sin hojas de cálculo ni recordatorios manuales.
+  </p>
+
+  <h2>Cómo funcionará Membryx en Yeye Trainer GYM</h2>
+  <ol class="flow">
+    <li><b>Tus socios quedan cargados en el sistema.</b> Migramos tu lista actual (nombre, teléfono,
+      plan y fecha de vencimiento) para que Membryx sepa a quién y cuándo cobrar.</li>
+    <li><b>Se genera un link de pago.</b> Desde el panel, o de forma automática antes del vencimiento,
+      Membryx crea un enlace de pago seguro con el valor del plan del socio.</li>
+    <li><b>El socio paga en línea.</b> Paga con tarjeta, PSE u otros medios de la pasarela. El dinero
+      se abona a la cuenta bancaria del gimnasio según los ciclos de la pasarela.</li>
+    <li><b>Confirmación automática por WhatsApp.</b> Al aprobarse el pago, el socio recibe un mensaje
+      con su nueva fecha de vencimiento y su membresía se renueva sola en el sistema.</li>
+    <li><b>Recordatorios automáticos.</b> 3, 2 y 1 día antes —y el mismo día del vencimiento— el socio
+      recibe un recordatorio por WhatsApp con el enlace para renovar.</li>
+    <li><b>Tú lo ves todo en el panel.</b> Socios, pagos, mensajes enviados y próximos vencimientos,
+      actualizado en tiempo real.</li>
+  </ol>
+
+  <div class="footer">
+    <span>Membryx · Documento de implementación</span>
+    <span>Página 1 de 3</span>
+  </div>
+</section>
+
+<!-- ================= PAGE 2 ================= -->
+<section class="page">
+  <div class="masthead">
+    <div class="brand">
+      <div class="wordmark">Membr<span>yx</span></div>
+      <div class="tag">Membresías · Pagos · Recordatorios</div>
+    </div>
+    <div class="mascots">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Mem">
+        <rect x="13" y="19" width="74" height="69" rx="26" fill="#4F46E5"/>
+        <circle cx="30" cy="18" r="3.6" fill="#4F46E5"/><circle cx="50" cy="14" r="3.6" fill="#4F46E5"/><circle cx="70" cy="18" r="3.6" fill="#4F46E5"/>
+        <circle cx="40" cy="50" r="7.4" fill="#fff"/><circle cx="64" cy="50" r="7.4" fill="#fff"/>
+        <circle cx="41.4" cy="51" r="3.3" fill="#1E1B4B"/><circle cx="65.4" cy="51" r="3.3" fill="#1E1B4B"/>
+        <path d="M39 67 Q52 78 66 67" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </svg>
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Ryx">
+        <path d="M53 4 L44 22 L56 22 L46 41" stroke="#06B6D4" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="50" cy="56" r="35" fill="#06B6D4"/>
+        <circle cx="40" cy="51" r="7.4" fill="#fff"/><circle cx="62" cy="51" r="7.4" fill="#fff"/>
+        <circle cx="41.4" cy="52" r="3.3" fill="#083344"/><circle cx="63.4" cy="52" r="3.3" fill="#083344"/>
+        <path d="M39 67 Q51 77 63 67" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <h2>Información y documentos que necesitamos</h2>
+  <p class="muted">
+    Todo se usa exclusivamente para configurar y activar tu operación. La documentación de identidad
+    y bancaria la exige <strong>la pasarela de pagos</strong> (por regulación) para poder abonar el
+    dinero a tu cuenta; Membryx solo la traslada al proceso de activación.
+  </p>
+
+  <table>
+    <thead><tr><th>Documento / dato</th><th>Para qué lo usamos</th></tr></thead>
+    <tbody>
+      <tr class="grouprow"><td colspan="2">A · Identidad del negocio</td></tr>
+      <tr><td class="what">Nombre comercial, dirección, ciudad, teléfono y correo del gimnasio</td><td>Identificar tu comercio ante la pasarela y mostrar tus datos en los comprobantes.</td></tr>
+      <tr><td class="what">Si operas como empresa: razón social, NIT, RUT y Cámara de Comercio (menos de 30 días)</td><td>Requisito de la pasarela para crear el comercio a nombre de la persona jurídica.</td></tr>
+      <tr><td class="what">Si operas como persona natural: cédula (frente y reverso) y RUT si lo tienes</td><td>Alternativa a lo anterior cuando el gimnasio no está constituido como empresa.</td></tr>
+      <tr><td class="what">Datos y cédula del representante legal / titular</td><td>Validación de identidad de quien firma la vinculación con la pasarela.</td></tr>
+      <tr><td class="what">Actividad económica (código CIIU) y estimado de ventas mensuales</td><td>Clasificación del comercio y límites operativos de la pasarela.</td></tr>
+
+      <tr class="grouprow"><td colspan="2">B · Cuenta bancaria para recibir los pagos</td></tr>
+      <tr><td class="what">Certificación bancaria (expedida hace menos de 30 días)</td><td>Confirmar la cuenta donde la pasarela depositará el dinero de las membresías. El titular debe coincidir con el NIT o la cédula del comercio.</td></tr>
+      <tr><td class="what">Banco, tipo de cuenta (ahorros / corriente) y número</td><td>Configurar la dispersión de fondos a tu favor.</td></tr>
+
+      <tr class="grouprow"><td colspan="2">C · WhatsApp del negocio</td></tr>
+      <tr><td class="what">Confirmación del número <b>+57 310 597 4565</b> como línea oficial de mensajes</td><td>Es el número desde el que los socios reciben confirmaciones y recordatorios. No debe volver a usarse en la app de WhatsApp personal.</td></tr>
+      <tr><td class="what">Nombre para mostrar y, opcional, logo y descripción del gimnasio</td><td>Es lo que el socio ve al recibir el mensaje. Cambiarlo luego requiere revisión y toma varios días.</td></tr>
+      <tr><td class="what">Confirmación de que tus socios autorizan el contacto por WhatsApp</td><td>Cumplimiento de la ley de datos personales (Habeas Data, Ley 1581 de 2012).</td></tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span>Membryx · Documento de implementación</span>
+    <span>Página 2 de 3</span>
+  </div>
+</section>
+
+<!-- ================= PAGE 3 ================= -->
+<section class="page">
+  <div class="masthead">
+    <div class="brand">
+      <div class="wordmark">Membr<span>yx</span></div>
+      <div class="tag">Membresías · Pagos · Recordatorios</div>
+    </div>
+    <div class="mascots">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Mem">
+        <rect x="13" y="19" width="74" height="69" rx="26" fill="#4F46E5"/>
+        <circle cx="30" cy="18" r="3.6" fill="#4F46E5"/><circle cx="50" cy="14" r="3.6" fill="#4F46E5"/><circle cx="70" cy="18" r="3.6" fill="#4F46E5"/>
+        <circle cx="40" cy="50" r="7.4" fill="#fff"/><circle cx="64" cy="50" r="7.4" fill="#fff"/>
+        <circle cx="41.4" cy="51" r="3.3" fill="#1E1B4B"/><circle cx="65.4" cy="51" r="3.3" fill="#1E1B4B"/>
+        <path d="M39 67 Q52 78 66 67" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </svg>
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Ryx">
+        <path d="M53 4 L44 22 L56 22 L46 41" stroke="#06B6D4" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="50" cy="56" r="35" fill="#06B6D4"/>
+        <circle cx="40" cy="51" r="7.4" fill="#fff"/><circle cx="62" cy="51" r="7.4" fill="#fff"/>
+        <circle cx="41.4" cy="52" r="3.3" fill="#083344"/><circle cx="63.4" cy="52" r="3.3" fill="#083344"/>
+        <path d="M39 67 Q51 77 63 67" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <h2>Información y documentos que necesitamos <span class="muted" style="font-weight:400;font-size:9pt;">(continuación)</span></h2>
+  <table>
+    <thead><tr><th>Documento / dato</th><th>Para qué lo usamos</th></tr></thead>
+    <tbody>
+      <tr class="grouprow"><td colspan="2">D · Base de socios actual</td></tr>
+      <tr><td class="what">Lista de socios activos: nombre, teléfono (formato +57…), correo, plan y fecha de vencimiento</td><td>Cargar tu operación real. Te enviamos una plantilla lista para llenar; de la fecha de vencimiento salen los recordatorios.</td></tr>
+
+      <tr class="grouprow"><td colspan="2">E · Configuración comercial</td></tr>
+      <tr><td class="what">Precio y duración de cada plan (mensual, trimestral, semestral, anual)</td><td>Definir los valores que se cobran y por cuántos días renueva cada plan.</td></tr>
+      <tr><td class="what">Correo del administrador del panel</td><td>Crear tu acceso al tablero de Membryx.</td></tr>
+      <tr><td class="what">Política de datos y términos publicados (una página web)</td><td>La piden tanto la pasarela como Meta/WhatsApp. Si no la tienes, te ayudamos a redactarla.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <b>¿Qué sigue?</b> Con esa información iniciamos la activación del comercio en la pasarela de pagos
+    —este trámite lo revisa la pasarela y puede tomar <b>varios días hábiles</b>—. En paralelo dejamos
+    listo el panel, migramos tus socios y configuramos WhatsApp. Cuando la pasarela apruebe, hacemos una
+    prueba real de punta a punta y pasamos tu gimnasio <b>a producción</b>.
+  </div>
+
+  <div class="closing">
+    <div class="sign">
+      <p class="muted">Quedamos atentos a cualquier duda durante todo el proceso.</p>
+      <p class="name">Equipo Membryx</p>
+      <p class="role">Implementación &amp; Soporte · membryx.ia@gmail.com</p>
+    </div>
+
+    <!-- Sello institucional -->
+    <svg class="seal" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-label="Sello institucional Membryx">
+      <defs>
+        <path id="arcTop" d="M 35.3,105.1 A 86,86 0 0 1 204.7,105.1"/>
+        <path id="arcBot" d="M 35.3,134.9 A 86,86 0 0 0 204.7,134.9"/>
+      </defs>
+      <circle cx="120" cy="120" r="113" fill="none" stroke="#1E1B4B" stroke-width="2"/>
+      <circle cx="120" cy="120" r="106" fill="none" stroke="#1E1B4B" stroke-width="4.5"/>
+      <circle cx="120" cy="120" r="99" fill="none" stroke="#1E1B4B" stroke-width="1"/>
+
+      <text fill="#1E1B4B" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="1.7">
+        <textPath href="#arcTop" startOffset="50%" text-anchor="middle">GESTIÓN DE MEMBRESÍAS</textPath>
+      </text>
+      <text fill="#1E1B4B" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600" letter-spacing="2">
+        <textPath href="#arcBot" startOffset="50%" text-anchor="middle">PAGOS · RECORDATORIOS</textPath>
+      </text>
+
+      <text x="31" y="125" text-anchor="middle" fill="#06B6D4" font-size="14" font-weight="700">&#9733;</text>
+      <text x="209" y="125" text-anchor="middle" fill="#06B6D4" font-size="14" font-weight="700">&#9733;</text>
+
+      <!-- Emblema central: célula / membrana -->
+      <g transform="translate(120,109)">
+        <polygon points="0,-29 25,-14.5 25,14.5 0,29 -25,14.5 -25,-14.5" fill="none" stroke="#4F46E5" stroke-width="4"/>
+        <circle r="16" fill="none" stroke="#06B6D4" stroke-width="3.4" stroke-dasharray="1.3 5.2" stroke-linecap="round"/>
+        <path d="M-10,3 A10,10 0 0 0 10,3" fill="none" stroke="#4F46E5" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="0" cy="-4" r="4.4" fill="#4F46E5"/>
+      </g>
+
+      <text x="120" y="156" text-anchor="middle" fill="#1E1B4B" font-family="Segoe UI, Arial, sans-serif" font-size="8.5" font-weight="700" letter-spacing="2">DOCUMENTO OFICIAL</text>
+      <text x="120" y="169" text-anchor="middle" fill="#64748B" font-family="Segoe UI, Arial, sans-serif" font-size="7.5" font-weight="700" letter-spacing="3">MMXXVI</text>
+    </svg>
+  </div>
+
+  <div class="footer">
+    <span>Membryx · Documento de implementación</span>
+    <span>Página 3 de 3</span>
+  </div>
+</section>
+
+</body>
+</html>
