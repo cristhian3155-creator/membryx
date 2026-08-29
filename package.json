@@ -18,6 +18,8 @@
     "prisma:studio": "prisma studio",
     "db:seed:demo": "tsx scripts/seed-demo.ts",
     "db:reset:demo": "tsx scripts/reset-demo.ts",
+    "db:promote:production": "tsx scripts/promote-to-production.ts",
+    "db:purge:demo": "tsx scripts/purge-demo.ts",
     "scheduler:run": "tsx src/scheduler/run-once.ts",
     "template:generate": "tsx scripts/generate-import-template.ts",
     "test": "vitest run",
