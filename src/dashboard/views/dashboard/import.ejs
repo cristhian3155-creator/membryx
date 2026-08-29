@@ -8,7 +8,7 @@
       Descarga la plantilla oficial, complétala y súbela. Columnas requeridas:
       <code class="text-xs bg-slate-100 px-1 rounded">full_name, phone, email, plan_code, start_date, expiration_date, status, external_id</code>.
     </p>
-    <a href="/dashboard/import/template" class="text-indigo-600 text-sm underline">Descargar plantilla (.csv)</a>
+    <a href="/dashboard/import/template" class="text-brand text-sm underline">Descargar plantilla (.csv)</a>
   </div>
 
   <form method="post" enctype="multipart/form-data" class="bg-white rounded-lg border border-slate-200 p-4 mb-6">
@@ -17,7 +17,7 @@
       <input type="checkbox" name="confirm" value="true" />
       Confirmar importación (si no se marca, solo se valida sin escribir en la base de datos)
     </label>
-    <button class="bg-indigo-600 text-white rounded px-4 py-2 text-sm">Subir y procesar</button>
+    <button class="bg-brand text-white rounded px-4 py-2 text-sm">Subir y procesar</button>
   </form>
 
   <% if (importSummary) { %>

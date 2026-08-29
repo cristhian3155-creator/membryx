@@ -1,7 +1,7 @@
 <%- include('../partials/head', { title: customer.fullName }) %>
 <%- include('../partials/nav') %>
 <div class="max-w-6xl mx-auto px-4 py-8">
-  <a href="/dashboard/customers" class="text-sm text-indigo-600">&larr; Clientes</a>
+  <a href="/dashboard/customers" class="text-sm text-brand">&larr; Clientes</a>
   <h1 class="text-xl font-semibold mt-2 mb-1"><%= customer.fullName %></h1>
   <p class="text-sm text-slate-500 mb-6"><%= customer.phone %> <% if (customer.email) { %>· <%= customer.email %><% } %></p>
 
@@ -34,7 +34,7 @@
             <option value="<%= p.code %>"><%= p.name %> - <%= (p.priceCents/100).toLocaleString('es-CO',{style:'currency',currency:business.currency}) %></option>
           <% }) %>
         </select>
-        <button type="submit" class="bg-indigo-600 text-white rounded px-3 py-1.5 text-sm">Generar link de pago</button>
+        <button type="submit" class="bg-brand text-white rounded px-3 py-1.5 text-sm">Generar link de pago</button>
       </form>
       <div id="checkout-result" class="text-sm mt-2"></div>
     </div>
@@ -93,7 +93,7 @@
     const data = await res.json();
     const el = document.getElementById('checkout-result');
     if (res.ok) {
-      el.innerHTML = '<a class="text-indigo-600 underline" target="_blank" href="' + data.checkoutUrl + '">Abrir checkout de Wompi (ref: ' + data.reference + ')</a>';
+      el.innerHTML = '<a class="text-brand underline" target="_blank" href="' + data.checkoutUrl + '">Abrir checkout de Wompi (ref: ' + data.reference + ')</a>';
     } else {
       el.innerHTML = '<span class="text-red-600">' + (data.error?.toString?.() || 'Error generando el pago') + '</span>';
     }

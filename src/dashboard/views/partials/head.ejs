@@ -3,7 +3,26 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><%= typeof title !== 'undefined' ? title : business.name %></title>
+  <title><%= typeof title !== 'undefined' ? title : brand.name %></title>
+  <% if (brand.faviconUrl) { %><link rel="icon" href="<%= brand.faviconUrl %>" /><% } %>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        brand: {
+          DEFAULT: '<%= brand.primary %>',
+          dark: '<%= brand.primaryDark %>',
+          accent: '<%= brand.accent %>'
+        }
+      } } }
+    };
+  </script>
+  <style>
+    :root{
+      --brand-primary: <%= brand.primary %>;
+      --brand-primary-dark: <%= brand.primaryDark %>;
+      --brand-accent: <%= brand.accent %>;
+    }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-800">

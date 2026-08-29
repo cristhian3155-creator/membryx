@@ -7,6 +7,22 @@ const intFromString = (name: string) =>
     .regex(/^\d+$/, `${name} debe ser un entero`)
     .transform(Number);
 
+/** Color hex (#rgb o #rrggbb) para la identidad visual del panel por negocio. */
+const hexColor = (name: string, fallback: string) =>
+  z
+    .string()
+    .trim()
+    .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, `${name} debe ser un color hex, ej. #4F46E5`)
+    .default(fallback);
+
+/** URL http(s) opcional; variable ausente o cadena vacia -> undefined. */
+const optionalUrl = z
+  .string()
+  .trim()
+  .default("")
+  .transform((v) => (v.length === 0 ? undefined : v))
+  .pipe(z.string().url().optional());
+
 const csvIntArray = (name: string) =>
   z
     .string({ required_error: `Falta la variable de entorno ${name}` })
@@ -30,6 +46,15 @@ const envSchema = z.object({
   CURRENCY: z.string().min(1),
   ENVIRONMENT: z.enum(["demo", "production"]),
   APP_BASE_URL: z.string().url(),
+
+  // Identidad visual del panel (opcional; por negocio). Sin estas variables el panel
+  // usa la marca Membryx por defecto.
+  BRAND_NAME: z.string().trim().default(""),
+  BRAND_PRIMARY: hexColor("BRAND_PRIMARY", "#4F46E5"),
+  BRAND_PRIMARY_DARK: hexColor("BRAND_PRIMARY_DARK", "#4338CA"),
+  BRAND_ACCENT: hexColor("BRAND_ACCENT", "#06B6D4"),
+  BRAND_LOGO_URL: optionalUrl,
+  BRAND_FAVICON_URL: optionalUrl,
 
   REMINDER_DAYS: csvIntArray("REMINDER_DAYS"),
 
@@ -123,6 +148,14 @@ export const config = {
     currency: env.CURRENCY,
     environment: env.ENVIRONMENT,
     baseUrl: env.APP_BASE_URL,
+  },
+  brand: {
+    name: env.BRAND_NAME || env.BUSINESS_NAME,
+    primary: env.BRAND_PRIMARY,
+    primaryDark: env.BRAND_PRIMARY_DARK,
+    accent: env.BRAND_ACCENT,
+    logoUrl: env.BRAND_LOGO_URL,
+    faviconUrl: env.BRAND_FAVICON_URL,
   },
   reminderDays: env.REMINDER_DAYS as number[],
   plans: PLAN_DEFINITIONS,

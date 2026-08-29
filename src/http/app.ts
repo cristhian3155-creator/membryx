@@ -31,6 +31,13 @@ export function createApp() {
     })
   );
 
+  // Datos disponibles en todas las vistas EJS (identidad visual + negocio).
+  app.use((_req, res, next) => {
+    res.locals.business = config.business;
+    res.locals.brand = config.brand;
+    next();
+  });
+
   app.use("/", authRouter);
   app.use("/checkout", checkoutRouter);
   app.use("/dashboard", dashboardRouter);

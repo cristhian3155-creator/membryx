@@ -10,7 +10,7 @@
       <tbody>
         <% payments.forEach(function(p) { %>
         <tr class="border-t border-slate-100">
-          <td class="px-4 py-2"><a class="text-indigo-600" href="/dashboard/customers/<%= p.customerId %>"><%= p.customer.fullName %></a></td>
+          <td class="px-4 py-2"><a class="text-brand" href="/dashboard/customers/<%= p.customerId %>"><%= p.customer.fullName %></a></td>
           <td class="px-4 py-2"><%= (p.amountCents/100).toLocaleString('es-CO',{style:'currency',currency:p.currency}) %></td>
           <td class="px-4 py-2"><%= p.paymentMethod || '-' %></td>
           <td class="px-4 py-2 text-xs text-slate-500"><%= p.reference %></td>
